@@ -85,12 +85,13 @@ def poll_deposit(self, id_):
     try:
         deposit = service.read(id_).deposit
         service.sync_status(deposit.id)
-    except DepositFailed:
-        # If the deposit already failed, we don't need to retry.
-        return
     except Exception:
         # Gracefully fail, the deposit can still be retried
         pass
+
+    # If the deposit failed already, don't do anything else
+    if deposit.status == SWHDepositStatus.FAILED:
+        return
 
     # Manually set status to FAILED on last retry.
     # Celery has a bug where it doesn't raise MaxRetriesExceededError, therefore we need to check retries manually.

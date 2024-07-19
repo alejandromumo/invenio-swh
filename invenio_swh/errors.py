@@ -39,3 +39,7 @@ class ControllerException(InvenioSWHException):
 
 class DeserializeException(ControllerException):
     """Raised when a remote response failed to be deserialized."""
+
+
+class StatusMismatch(InvenioSWHException):
+    """Raised when the deposit status is not the expected one."""
